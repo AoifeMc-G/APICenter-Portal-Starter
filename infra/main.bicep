@@ -1,4 +1,4 @@
-targetScope = 'subscription'
+targetScope = 'resourceGroup'
 
 // The main bicep module to provision Azure resources.
 // For a more complete walkthrough to understand how this file works with azd,
