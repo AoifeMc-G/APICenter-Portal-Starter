@@ -1,4 +1,4 @@
-targetScope = 'resourceGroup'
+targetScope = 'subscription'
 
 // The main bicep module to provision Azure resources.
 // For a more complete walkthrough to understand how this file works with azd,
@@ -129,7 +129,7 @@ module staticApp './core/host/staticwebapp.bicep' = {
   name: 'staticapp'
   scope: rg
   params: {
-    name: !empty(staticAppName) ? staticAppName : '${abbrs.webStaticSites}${resourceToken}-portal'
+    name: 'webapp-dev-apim-portal'
     location: staticAppLocation
     tags: union(tags, { 'azd-service-name': azdServiceName })
     sku: {
