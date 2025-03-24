@@ -102,7 +102,7 @@ resource apiCenterExisting 'Microsoft.ApiCenter/services@2024-03-15-preview' exi
 // Provision API Center
 module apiCenter './core/gateway/apicenter.bicep' = if (apiCenterExisted != true) {
   name: 'apicenter'
-  scope: rg
+  scope: resourceGroup(resourceGroupName)
   params: {
     name: apiCenterName
     location: apiCenterRegion
@@ -114,7 +114,7 @@ module apiCenter './core/gateway/apicenter.bicep' = if (apiCenterExisted != true
 // Provision monitoring resource with Azure Monitor
 module monitoring './core/monitor/monitoring.bicep' = if (useMonitoring == true) {
   name: 'monitoring'
-  scope: rg
+  scope: resourceGroup(resourceGroupName)
   params: {
     location: location
     tags: tags
@@ -127,7 +127,7 @@ module monitoring './core/monitor/monitoring.bicep' = if (useMonitoring == true)
 // Provision Static Web Apps for each application
 module staticApp './core/host/staticwebapp.bicep' = {
   name: 'staticapp'
-  scope: rg
+  scope: resourceGroup(resourceGroupName)
   params: {
     name: 'webapp-dev-apim-portal'
     location: staticAppLocation
