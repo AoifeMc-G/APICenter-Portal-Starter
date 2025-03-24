@@ -26,16 +26,16 @@ param environmentName string
 })
 param location string
 
-param resourceGroupName string = ''
+param resourceGroupName string = 'rsg-neu-rsv-cloudops'
 
 @description('Value indicating whether to use existing API Center instance or not.')
-param apiCenterExisted bool
+param apiCenterExisted bool = true
 @description('Name of the API Center. You can omit this value if `apiCenterExisted` value is set to `False`.')
-param apiCenterName string
+param apiCenterName string = 'apiCenter-ki-api-dev-westeurope-001'
 // Set API Center location the same location as the main location
 var apiCenterRegion = location
 @description('Name of the API Center resource group. You can omit this value if `apiCenterExisted` value is set to `False`.')
-param apiCenterResourceGroupName string
+param apiCenterResourceGroupName string = 'rsg-neu-rsv-cloudops'
 
 @description('Use monitoring and performance tracing')
 param useMonitoring bool // Set in main.parameters.json
@@ -85,31 +85,31 @@ var resourceToken = toLower(uniqueString(subscription().id, environmentName, loc
 var azdServiceName = 'staticapp-portal'
 
 // Organize resources in a resource group
-resource rg 'Microsoft.Resources/resourceGroups@2021-04-01' = {
-  name: !empty(resourceGroupName) ? resourceGroupName : '${abbrs.resourcesResourceGroups}${environmentName}'
-  location: location
-  tags: tags
+resource rg 'Microsoft.Resources/resourceGroups@2021-04-01' existing = {
+  name: resourceGroupName
 }
 
-resource rgApiCenter 'Microsoft.Resources/resourceGroups@2021-04-01' existing = if (apiCenterExisted == true) {
+resource rgApiCenter 'Microsoft.Resources/resourceGroups@2021-04-01' existing = {
   name: apiCenterResourceGroupName
 }
+
+resource apiCenterExisting 'Microsoft.ApiCenter/services@2024-03-15-preview' existing = {
+  name: apiCenterName
+  scope: rgApiCenter
+}
+
 
 // Provision API Center
 module apiCenter './core/gateway/apicenter.bicep' = if (apiCenterExisted != true) {
   name: 'apicenter'
   scope: rg
   params: {
-    name: !empty(apiCenterName) ? apiCenterName : 'apic-${resourceToken}'
+    name: apiCenterName
     location: apiCenterRegion
     tags: tags
   }
 }
 
-resource apiCenterExisting 'Microsoft.ApiCenter/services@2024-03-15-preview' existing = if (apiCenterExisted == true) {
-  name: apiCenterName
-  scope: rgApiCenter
-}
 
 // Provision monitoring resource with Azure Monitor
 module monitoring './core/monitor/monitoring.bicep' = if (useMonitoring == true) {
