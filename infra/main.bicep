@@ -27,7 +27,7 @@ param environmentName string
 })
 param location string
 
-param resourceGroupName string = ''
+param resourceGroupName string = 'rg-dev-api-portal'
 
 @description('Value indicating whether to use existing API Center instance or not.')
 param apiCenterExisted bool
@@ -130,7 +130,7 @@ module staticApp './core/host/staticwebapp.bicep' = {
   name: 'staticapp'
   scope: rg
   params: {
-    name: !empty(staticAppName) ? staticAppName : '${abbrs.webStaticSites}${resourceToken}-portal'
+    name: 'webapp-api-center-portal'
     location: staticAppLocation
     tags: union(tags, { 'azd-service-name': azdServiceName })
     sku: {
