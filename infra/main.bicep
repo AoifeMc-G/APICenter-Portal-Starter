@@ -1,3 +1,4 @@
+
 targetScope = 'subscription'
 
 // The main bicep module to provision Azure resources.
@@ -6,7 +7,7 @@ targetScope = 'subscription'
 
 @minLength(1)
 @maxLength(64)
-@description('Name of the environment which is used to generate a short unique hash used in all resources.')
+@description('Name of the the environment which is used to generate a short unique hash used in all resources.')
 param environmentName string
 
 // Limited to the following locations due to the availability of API Center
@@ -26,40 +27,16 @@ param environmentName string
 })
 param location string
 
-var supportedRegions = [
-  'East US'
-  'West Europe'
-  'UK South'
-  'Central India'
-  'Australia East'
-  'France Central'
-  'Sweden Central'
-  'Canada Central'
-]
-
-// Tagging for all resources
-var tags = {
-  'azd-env-name': environmentName
-}
-
-// Existing API Center Resource
-resource apiCenterExisting 'Microsoft.ApiCenter/services@2024-03-01' existing = {
-  name: apiCenterName
-  scope: rgApiCenter
-}
-
-param resourceGroupName string = 'rsg-neu-rsv-cloudops'
+param resourceGroupName string = ''
 
 @description('Value indicating whether to use existing API Center instance or not.')
-param apiCenterExisted bool = true
+param apiCenterExisted bool
 @description('Name of the API Center. You can omit this value if `apiCenterExisted` value is set to `False`.')
-param apiCenterName string = 'apiCenter-ki-api-dev-westeurope-001'
-
+param apiCenterName string
 // Set API Center location the same location as the main location
 var apiCenterRegion = location
-
 @description('Name of the API Center resource group. You can omit this value if `apiCenterExisted` value is set to `False`.')
-param apiCenterResourceGroupName string = 'rsg-neu-rsv-cloudops'
+param apiCenterResourceGroupName string
 
 @description('Use monitoring and performance tracing')
 param useMonitoring bool // Set in main.parameters.json
@@ -85,39 +62,60 @@ param applicationInsightsDashboardName string = ''
 })
 param staticAppLocation string
 param staticAppSkuName string = 'Free'
+param staticAppName string = ''
 
 var abbrs = loadJsonContent('./abbreviations.json')
 
+// tags that should be applied to all resources.
+var tags = {
+  // Tag all resources with the environment name.
+  'azd-env-name': environmentName
+}
+
 // Generate a unique token to be used in naming resources.
+// Remove linter suppression after using.
+#disable-next-line no-unused-vars
 var resourceToken = toLower(uniqueString(subscription().id, environmentName, location))
 
 // Name of the service defined in azure.yaml
+// A tag named azd-service-name with this value should be applied to the service host resource, such as:
+//   Microsoft.Web/sites for appservice, function
+// Example usage:
+//   tags: union(tags, { 'azd-service-name': apiServiceName })
+#disable-next-line no-unused-vars
 var azdServiceName = 'staticapp-portal'
 
 // Organize resources in a resource group
-resource rg 'Microsoft.Resources/resourceGroups@2021-04-01' existing = {
-  name: resourceGroupName
+resource rg 'Microsoft.Resources/resourceGroups@2021-04-01' = {
+  name: !empty(resourceGroupName) ? resourceGroupName : '${abbrs.resourcesResourceGroups}${environmentName}'
+  location: location
+  tags: tags
 }
 
-resource rgApiCenter 'Microsoft.Resources/resourceGroups@2021-04-01' existing = {
+resource rgApiCenter 'Microsoft.Resources/resourceGroups@2021-04-01' existing = if (apiCenterExisted == true) {
   name: apiCenterResourceGroupName
 }
 
 // Provision API Center
 module apiCenter './core/gateway/apicenter.bicep' = if (apiCenterExisted != true) {
   name: 'apicenter'
-  scope: resourceGroup(resourceGroupName)
+  scope: rg
   params: {
-    name: apiCenterName
+    name: !empty(apiCenterName) ? apiCenterName : 'apic-${resourceToken}'
     location: apiCenterRegion
     tags: tags
   }
 }
 
+resource apiCenterExisting 'Microsoft.ApiCenter/services@2024-03-15-preview' existing = if (apiCenterExisted == true) {
+  name: apiCenterName
+  scope: rgApiCenter
+}
+
 // Provision monitoring resource with Azure Monitor
 module monitoring './core/monitor/monitoring.bicep' = if (useMonitoring == true) {
   name: 'monitoring'
-  scope: resourceGroup(resourceGroupName)
+  scope: rg
   params: {
     location: location
     tags: tags
@@ -130,9 +128,9 @@ module monitoring './core/monitor/monitoring.bicep' = if (useMonitoring == true)
 // Provision Static Web Apps for each application
 module staticApp './core/host/staticwebapp.bicep' = {
   name: 'staticapp'
-  scope: resourceGroup(resourceGroupName)
+  scope: rg
   params: {
-    name: 'webapp-dev-apicenter-portal'
+    name: !empty(staticAppName) ? staticAppName : '${abbrs.webStaticSites}${resourceToken}-portal'
     location: staticAppLocation
     tags: union(tags, { 'azd-service-name': azdServiceName })
     sku: {
