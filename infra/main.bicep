@@ -6,7 +6,7 @@ targetScope = 'subscription'
 
 @minLength(1)
 @maxLength(64)
-@description('Name of the the environment which is used to generate a short unique hash used in all resources.')
+@description('Name of the environment which is used to generate a short unique hash used in all resources.')
 param environmentName string
 
 // Limited to the following locations due to the availability of API Center
@@ -26,14 +26,38 @@ param environmentName string
 })
 param location string
 
+var supportedRegions = [
+  'East US'
+  'West Europe'
+  'UK South'
+  'Central India'
+  'Australia East'
+  'France Central'
+  'Sweden Central'
+  'Canada Central'
+]
+
+// Tagging for all resources
+var tags = {
+  'azd-env-name': environmentName
+}
+
+// Existing API Center Resource
+resource apiCenterExisting 'Microsoft.ApiCenter/services@2024-03-01' existing = {
+  name: apiCenterName
+  scope: rgApiCenter
+}
+
 param resourceGroupName string = 'rsg-neu-rsv-cloudops'
 
 @description('Value indicating whether to use existing API Center instance or not.')
 param apiCenterExisted bool = true
 @description('Name of the API Center. You can omit this value if `apiCenterExisted` value is set to `False`.')
 param apiCenterName string = 'apiCenter-ki-api-dev-westeurope-001'
+
 // Set API Center location the same location as the main location
 var apiCenterRegion = location
+
 @description('Name of the API Center resource group. You can omit this value if `apiCenterExisted` value is set to `False`.')
 param apiCenterResourceGroupName string = 'rsg-neu-rsv-cloudops'
 
@@ -64,23 +88,10 @@ param staticAppSkuName string = 'Free'
 
 var abbrs = loadJsonContent('./abbreviations.json')
 
-// tags that should be applied to all resources.
-var tags = {
-  // Tag all resources with the environment name.
-  'azd-env-name': environmentName
-}
-
 // Generate a unique token to be used in naming resources.
-// Remove linter suppression after using.
-#disable-next-line no-unused-vars
 var resourceToken = toLower(uniqueString(subscription().id, environmentName, location))
 
 // Name of the service defined in azure.yaml
-// A tag named azd-service-name with this value should be applied to the service host resource, such as:
-//   Microsoft.Web/sites for appservice, function
-// Example usage:
-//   tags: union(tags, { 'azd-service-name': apiServiceName })
-#disable-next-line no-unused-vars
 var azdServiceName = 'staticapp-portal'
 
 // Organize resources in a resource group
@@ -92,12 +103,6 @@ resource rgApiCenter 'Microsoft.Resources/resourceGroups@2021-04-01' existing = 
   name: apiCenterResourceGroupName
 }
 
-resource apiCenterExisting 'Microsoft.ApiCenter/services@2024-03-15-preview' existing = {
-  name: apiCenterName
-  scope: rgApiCenter
-}
-
-
 // Provision API Center
 module apiCenter './core/gateway/apicenter.bicep' = if (apiCenterExisted != true) {
   name: 'apicenter'
@@ -108,7 +113,6 @@ module apiCenter './core/gateway/apicenter.bicep' = if (apiCenterExisted != true
     tags: tags
   }
 }
-
 
 // Provision monitoring resource with Azure Monitor
 module monitoring './core/monitor/monitoring.bicep' = if (useMonitoring == true) {
