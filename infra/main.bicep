@@ -61,7 +61,6 @@ param applicationInsightsDashboardName string = ''
 })
 param staticAppLocation string
 param staticAppSkuName string = 'Free'
-param staticAppName string = ''
 
 var abbrs = loadJsonContent('./abbreviations.json')
 
