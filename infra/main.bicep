@@ -129,7 +129,7 @@ module staticApp './core/host/staticwebapp.bicep' = {
   name: 'staticapp'
   scope: resourceGroup(resourceGroupName)
   params: {
-    name: 'webapp-dev-apim-portal'
+    name: 'webapp-dev-apicenter-portal'
     location: staticAppLocation
     tags: union(tags, { 'azd-service-name': azdServiceName })
     sku: {
