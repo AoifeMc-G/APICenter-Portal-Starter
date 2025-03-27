@@ -17,14 +17,14 @@ param environmentName string
   'centralindia'
   'eastus'
   'uksouth'
-  'westeurope'
+  'northeurope'
 ])
 @metadata({
   azd: {
     type: 'location'
   }
 })
-param location string 
+param location string = 'northeurope'  
 
 param resourceGroupName string = 'rsg-neu-rsv-cloudops-new'  // Use your existing resource group name
 
