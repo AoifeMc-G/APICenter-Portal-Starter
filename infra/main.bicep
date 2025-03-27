@@ -24,7 +24,7 @@ param environmentName string
     type: 'location'
   }
 })
-param location string = 'westeurope'  // Set the location to 'westeurope' as per your existing API Center
+param location string 
 
 param resourceGroupName string = 'rsg-neu-rsv-cloudops-new'  // Use your existing resource group name
 
