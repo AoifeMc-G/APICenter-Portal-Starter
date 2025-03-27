@@ -18,6 +18,7 @@ param environmentName string
   'eastus'
   'uksouth'
   'northeurope'
+  'westeurope'  // Added westeurope to allowed locations
 ])
 @metadata({
   azd: {
@@ -50,7 +51,7 @@ param applicationInsightsDashboardName string = ''
   'centralus'
   'eastasia'
   'eastus2'
-  'westeurope'
+  'westeurope'  // Added westeurope to allowed locations for Static Web Apps
   'westus2'
 ])
 @metadata({
