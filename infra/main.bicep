@@ -1,4 +1,3 @@
-
 targetScope = 'subscription'
 
 // The main bicep module to provision Azure resources.
@@ -7,7 +6,7 @@ targetScope = 'subscription'
 
 @minLength(1)
 @maxLength(64)
-@description('Name of the the environment which is used to generate a short unique hash used in all resources.')
+@description('Name of the environment which is used to generate a short unique hash used in all resources.')
 param environmentName string
 
 // Limited to the following locations due to the availability of API Center
@@ -25,22 +24,21 @@ param environmentName string
     type: 'location'
   }
 })
-param location string
+param location string = 'westeurope'  // Set the location to 'westeurope' as per your existing API Center
 
-param resourceGroupName string = 'rg-dev-api-portal'
+param resourceGroupName string = 'rsg-neu-rsv-cloudops-new'  // Use your existing resource group name
 
 @description('Value indicating whether to use existing API Center instance or not.')
-param apiCenterExisted bool
+param apiCenterExisted bool = true  // Set to true since you're using an existing API Center
 @description('Name of the API Center. You can omit this value if `apiCenterExisted` value is set to `False`.')
-param apiCenterName string
+param apiCenterName string = 'apiCenter-ki-api-dev-westeurope-002'  // Your existing API Center name
 // Set API Center location the same location as the main location
 var apiCenterRegion = location
 @description('Name of the API Center resource group. You can omit this value if `apiCenterExisted` value is set to `False`.')
-param apiCenterResourceGroupName string
+param apiCenterResourceGroupName string = 'rsg-neu-rsv-cloudops-new'  // Same as resource group name
 
 @description('Use monitoring and performance tracing')
-param useMonitoring bool // Set in main.parameters.json
-
+param useMonitoring bool = false  // Set to false if you're not using monitoring
 param logAnalyticsName string = ''
 param applicationInsightsName string = ''
 param applicationInsightsDashboardName string = ''
@@ -73,15 +71,11 @@ var tags = {
 }
 
 // Generate a unique token to be used in naming resources.
-// Remove linter suppression after using.
-#disable-next-line no-unused-vars
 var resourceToken = toLower(uniqueString(subscription().id, environmentName, location))
 
 // Name of the service defined in azure.yaml
 // A tag named azd-service-name with this value should be applied to the service host resource, such as:
 //   Microsoft.Web/sites for appservice, function
-// Example usage:
-//   tags: union(tags, { 'azd-service-name': apiServiceName })
 #disable-next-line no-unused-vars
 var azdServiceName = 'staticapp-portal'
 
@@ -96,23 +90,13 @@ resource rgApiCenter 'Microsoft.Resources/resourceGroups@2021-04-01' existing = 
   name: apiCenterResourceGroupName
 }
 
-// Provision API Center
-module apiCenter './core/gateway/apicenter.bicep' = if (apiCenterExisted != true) {
-  name: 'apicenter'
-  scope: rg
-  params: {
-    name: !empty(apiCenterName) ? apiCenterName : 'apic-${resourceToken}'
-    location: apiCenterRegion
-    tags: tags
-  }
-}
-
+// Provision API Center (This is skipped if using an existing API Center)
 resource apiCenterExisting 'Microsoft.ApiCenter/services@2024-03-15-preview' existing = if (apiCenterExisted == true) {
   name: apiCenterName
   scope: rgApiCenter
 }
 
-// Provision monitoring resource with Azure Monitor
+// Provision monitoring resource with Azure Monitor (Skip if useMonitoring is false)
 module monitoring './core/monitor/monitoring.bicep' = if (useMonitoring == true) {
   name: 'monitoring'
   scope: rg
@@ -144,8 +128,8 @@ output AZURE_LOCATION string = location
 output AZURE_TENANT_ID string = tenant().tenantId
 
 output USE_EXISTING_API_CENTER bool = apiCenterExisted
-output AZURE_API_CENTER string = apiCenterExisted ? apiCenterExisting.name : apiCenter.outputs.name
-output AZURE_API_CENTER_LOCATION string = apiCenterExisted ? apiCenterExisting.location : apiCenter.outputs.location
+output AZURE_API_CENTER string = apiCenterExisted ? apiCenterExisting.name : 'New API Center'  // Use apiCenterExisting for existing API Center
+output AZURE_API_CENTER_LOCATION string = apiCenterExisted ? apiCenterExisting.location : 'New API Center Location'
 output AZURE_API_CENTER_RESOURCE_GROUP string = apiCenterExisted ? rgApiCenter.name : rg.name
 
 output AZURE_STATIC_APP string = staticApp.outputs.name
