@@ -22,19 +22,19 @@ if ([string]::IsNullOrEmpty($env:GITHUB_WORKSPACE)) {
     $RESOURCE_GROUP = $USE_EXISTING_API_CENTER ? $env:AZURE_API_CENTER_RESOURCE_GROUP : "rg-$AZURE_ENV_NAME"
 
     # Create a service principal and assign the required permissions
-    $appId = $env:AZURE_CLIENT_ID
-    if ([string]::IsNullOrEmpty($appId)) {
-        $appId = az ad app list --display-name "spn-$AZURE_ENV_NAME" --query "[].appId" -o tsv
-        if ([string]::IsNullOrEmpty($appId)) {
-            $appId = az ad app create --display-name spn-$AZURE_ENV_NAME --query "appId" -o tsv
-            $spnId = az ad sp create --id $appId --query "id" -o tsv
-        }
-    }
-    $spnId = az ad sp list --display-name "spn-$AZURE_ENV_NAME" --query "[].id" -o tsv
-    if ([string]::IsNullOrEmpty($spnId)) {
-        $spnId = az ad sp create --id $appId --query "id" -o tsv
-    }
-    $objectId = az ad app show --id $appId --query "id" -o tsv
+    # $appId = $env:AZURE_CLIENT_ID
+    # if ([string]::IsNullOrEmpty($appId)) {
+    #     $appId = az ad app list --display-name "spn-$AZURE_ENV_NAME" --query "[].appId" -o tsv
+    #     if ([string]::IsNullOrEmpty($appId)) {
+    #         $appId = az ad app create --display-name spn-$AZURE_ENV_NAME --query "appId" -o tsv
+    #         $spnId = az ad sp create --id $appId --query "id" -o tsv
+    #     }
+    # }
+    # $spnId = az ad sp list --display-name "spn-$AZURE_ENV_NAME" --query "[].id" -o tsv
+    # if ([string]::IsNullOrEmpty($spnId)) {
+    #     $spnId = az ad sp create --id $appId --query "id" -o tsv
+    # }
+    # $objectId = az ad app show --id $appId --query "id" -o tsv
 
     # Add redirect URLs and required permissions to the app
     $spa = @{ redirectUris = @( "http://localhost:5173", "https://localhost:5173", "$env:AZURE_STATIC_APP_URL" ) }
@@ -48,12 +48,12 @@ if ([string]::IsNullOrEmpty($env:GITHUB_WORKSPACE)) {
         --body $payload
 
     # Assign the required role to the current user and service principal
-    $userId = az ad signed-in-user show --query "id" -o tsv
-    $roleDefinitionId = "c7244dfb-f447-457d-b2ba-3999044d1706"
-    $resourceId = az resource list --namespace "Microsoft.ApiCenter" --resource-type "services" -g $RESOURCE_GROUP --query "[].id" -o tsv
+    # $userId = az ad signed-in-user show --query "id" -o tsv
+    # $roleDefinitionId = "c7244dfb-f447-457d-b2ba-3999044d1706"
+    # $resourceId = az resource list --namespace "Microsoft.ApiCenter" --resource-type "services" -g $RESOURCE_GROUP --query "[].id" -o tsv
 
-    $userAssigned = az role assignment create --role $roleDefinitionId --scope $resourceId --assignee $userId
-    $spnAssigned = az role assignment create --role $roleDefinitionId --scope $resourceId --assignee $spnId
+    # $userAssigned = az role assignment create --role $roleDefinitionId --scope $resourceId --assignee $userId
+    # $spnAssigned = az role assignment create --role $roleDefinitionId --scope $resourceId --assignee $spnId
 
     # Set the environment variables
     azd env set AZURE_CLIENT_ID $appId
