@@ -55,7 +55,7 @@ if ([string]::IsNullOrEmpty($env:GITHUB_WORKSPACE)) {
     $userAssigned = az role assignment create --role $roleDefinitionId --scope $resourceId --assignee $userId
     $spnAssigned = az role assignment create --role $roleDefinitionId --scope $resourceId --assignee $spnId
 
-    Set the environment variables
+    # Set the environment variables
     azd env set AZURE_CLIENT_ID $appId
 } else {
     Write-Host "Skipping to register the application in Azure..."

@@ -1,11 +1,11 @@
-# #!/bin/bash
+#!/bin/bash
 
-# # Runs the post-provision script after the environment is provisioned
-# # It does the following:
-# # 1. Creates a service principal and assigns the required permissions
-# # 2. Adds redirect URLs and required permissions to the app
-# # 3. Assigns the required role to the current user and service principal
-# # 4. Sets the environment variables
+# Runs the post-provision script after the environment is provisioned
+# It does the following:
+# 1. Creates a service principal and assigns the required permissions
+# 2. Adds redirect URLs and required permissions to the app
+# 3. Assigns the required role to the current user and service principal
+# 4. Sets the environment variables
 
 set -e
 
@@ -14,7 +14,7 @@ echo "Running post-provision script..."
 # REPOSITORY_ROOT=$(git rev-parse --show-toplevel)
 REPOSITORY_ROOT="$(dirname "$(realpath "$0")")/../.."
 
-# # Run only if GITHUB_WORKSPACE is NOT set - this is NOT running in a GitHub Action workflow
+# Run only if GITHUB_WORKSPACE is NOT set - this is NOT running in a GitHub Action workflow
 if [ -z "$GITHUB_WORKSPACE" ];
 then
     echo "Registering the application in Azure..."
@@ -61,7 +61,7 @@ then
         --headers Content-Type=application/json \
         --body "$payload"
 
-#     # Assign the required role to the current user and service principal
+    # Assign the required role to the current user and service principal
     userId=$(az ad signed-in-user show --query "id" -o tsv)
     roleDefinitionId="c7244dfb-f447-457d-b2ba-3999044d1706"
     resourceId=$(az resource list --namespace "Microsoft.ApiCenter" --resource-type "services" -g $RESOURCE_GROUP --query "[].id" -o tsv)
