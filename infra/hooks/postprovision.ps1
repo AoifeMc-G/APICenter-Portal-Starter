@@ -21,20 +21,15 @@ if ([string]::IsNullOrEmpty($env:GITHUB_WORKSPACE)) {
     $AZURE_ENV_NAME = $env:AZURE_ENV_NAME
     $RESOURCE_GROUP = $USE_EXISTING_API_CENTER ? $env:AZURE_API_CENTER_RESOURCE_GROUP : "rg-$AZURE_ENV_NAME"
 
-    # Create a service principal and assign the required permissions
-    $appId = $env:AZURE_CLIENT_ID
-    if ([string]::IsNullOrEmpty($appId)) {
-        $appId = az ad app list --display-name "spn-$AZURE_ENV_NAME" --query "[].appId" -o tsv
-        if ([string]::IsNullOrEmpty($appId)) {
-            $appId = az ad app create --display-name spn-$AZURE_ENV_NAME --query "appId" -o tsv
-            $spnId = az ad sp create --id $appId --query "id" -o tsv
-        }
-    }
+    # Use the new Application ID and Object ID
+    $appId = "4f9d61c9-4926-40c3-b6ab-5350568d5288"
+    $objectId = "e97f496b-290e-416c-a555-33f9248f1274"
+
+    # Ensure the service principal exists
     $spnId = az ad sp list --display-name "spn-$AZURE_ENV_NAME" --query "[].id" -o tsv
     if ([string]::IsNullOrEmpty($spnId)) {
         $spnId = az ad sp create --id $appId --query "id" -o tsv
     }
-    $objectId = az ad app show --id $appId --query "id" -o tsv
 
     # Add redirect URLs and required permissions to the app
     $spa = @{ redirectUris = @( "http://localhost:5173", "https://localhost:5173", "$env:AZURE_STATIC_APP_URL" ) }
