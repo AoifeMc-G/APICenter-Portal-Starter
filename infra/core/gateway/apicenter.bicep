@@ -3,7 +3,7 @@ param name string
 param location string
 param tags object
 
-param skuName string = 'Standard'
+param skuName string = 'Free'
 
 // Create an API center service
 resource apiCenter 'Microsoft.ApiCenter/services@2024-03-15-preview' = {
