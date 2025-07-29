@@ -62,6 +62,7 @@ param applicationInsightsDashboardName string = ''
 })
 param staticAppLocation string
 param staticAppSkuName string = 'Free'
+param staticAppName string = ''
 
 var abbrs = loadJsonContent('./abbreviations.json')
 
@@ -127,7 +128,7 @@ module staticApp './core/host/staticwebapp.bicep' = {
   name: 'staticapp'
   scope: rg
   params: {
-    name: 'webapp-dev-api-portal'
+    name: !empty(staticAppName) ? staticAppName : 'swa-${resourceToken}'
     location: staticAppLocation
     tags: union(tags, { 'azd-service-name': azdServiceName })
     sku: {
