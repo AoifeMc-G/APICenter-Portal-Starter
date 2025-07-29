@@ -26,7 +26,8 @@ param environmentName string
 })
 param location string
 
-param resourceGroupName string = 'rg-dev-api-portal'
+@description('Name of the existing resource group to deploy resources into')
+param resourceGroupName string 
 
 @description('Value indicating whether to use existing API Center instance or not.')
 param apiCenterExisted bool
@@ -61,7 +62,6 @@ param applicationInsightsDashboardName string = ''
 })
 param staticAppLocation string
 param staticAppSkuName string = 'Free'
-param staticAppName string = ''
 
 var abbrs = loadJsonContent('./abbreviations.json')
 
@@ -85,10 +85,8 @@ var resourceToken = toLower(uniqueString(subscription().id, environmentName, loc
 var azdServiceName = 'staticapp-portal'
 
 // Organize resources in a resource group
-resource rg 'Microsoft.Resources/resourceGroups@2021-04-01' = {
-  name: !empty(resourceGroupName) ? resourceGroupName : '${abbrs.resourcesResourceGroups}${environmentName}'
-  location: location
-  tags: tags
+resource rg 'Microsoft.Resources/resourceGroups@2021-04-01' existing = {
+  name: resourceGroupName
 }
 
 resource rgApiCenter 'Microsoft.Resources/resourceGroups@2021-04-01' existing = if (apiCenterExisted == true) {
@@ -143,8 +141,8 @@ output AZURE_LOCATION string = location
 output AZURE_TENANT_ID string = tenant().tenantId
 
 output USE_EXISTING_API_CENTER bool = apiCenterExisted
-output AZURE_API_CENTER string = apiCenterExisted ? apiCenterExisting.name : apiCenter.outputs.name
-output AZURE_API_CENTER_LOCATION string = apiCenterExisted ? apiCenterExisting.location : apiCenter.outputs.location
+output AZURE_API_CENTER string = apiCenterExisted ? apiCenterExisting!.name : apiCenter!.outputs.name
+output AZURE_API_CENTER_LOCATION string = apiCenterExisted ? apiCenterExisting!.location : apiCenter!.outputs.location
 output AZURE_API_CENTER_RESOURCE_GROUP string = apiCenterExisted ? rgApiCenter.name : rg.name
 
 output AZURE_STATIC_APP string = staticApp.outputs.name

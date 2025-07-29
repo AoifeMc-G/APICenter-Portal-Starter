@@ -14,11 +14,11 @@
         "apiCenterName": {
             "value": "${AZURE_API_CENTER}"
         },
-        "apiCenterRegion": {
-            "value": "${AZURE_API_CENTER_LOCATION}"
-        },
         "apiCenterResourceGroupName": {
             "value": "${AZURE_API_CENTER_RESOURCE_GROUP}"
+        },
+        "resourceGroupName": {
+            "value": "${AZURE_RESOURCE_GROUP_NAME}"
         },
         "useMonitoring": {
             "value": "${USE_MONITORING=false}"
