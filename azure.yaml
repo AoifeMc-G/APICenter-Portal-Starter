@@ -6,9 +6,11 @@
 
 # Name of the application.
 name: apicenter-portal-starter
+resourceGroup: ${AZURE_RESOURCE_GROUP_NAME}
+
 metadata:
   template: api-center-portal
-  
+
 workflows:
   up: 
     steps:
