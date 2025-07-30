@@ -4,11 +4,6 @@ targetScope = 'subscription'
 // For a more complete walkthrough to understand how this file works with azd,
 // see https://learn.microsoft.com/en-us/azure/developer/azure-developer-cli/make-azd-compatible?pivots=azd-create
 
-@minLength(1)
-@maxLength(64)
-@description('Name of the the environment which is used to generate a short unique hash used in all resources.')
-param environmentName string
-
 // Limited to the following locations due to the availability of API Center
 @minLength(1)
 @description('Primary location for all resources')
@@ -62,26 +57,22 @@ param applicationInsightsDashboardName string = ''
 })
 param staticAppLocation string
 param staticAppSkuName string = 'Free'
-param staticAppName string = ''
+@description('Name of the Static Web App - must be globally unique')
+param staticAppName string = 'static-apic-uat-001'
 
 var abbrs = loadJsonContent('./abbreviations.json')
 
-// tags that should be applied to all resources.
+// Simple tags without environment dependency
 var tags = {
-  // Tag all resources with the environment name.
-  'azd-env-name': environmentName
+  'app-name': 'api-portal'
+  'deployment': 'static-web-app'
 }
 
-// Generate a unique token to be used in naming resources.
-// Remove linter suppression after using.
+// Generate a unique token using resource group and location only
 #disable-next-line no-unused-vars
-var resourceToken = toLower(uniqueString(subscription().id, environmentName, location))
+var resourceToken = toLower(uniqueString(subscription().id, resourceGroupName, location))
 
 // Name of the service defined in azure.yaml
-// A tag named azd-service-name with this value should be applied to the service host resource, such as:
-//   Microsoft.Web/sites for appservice, function
-// Example usage:
-//   tags: union(tags, { 'azd-service-name': apiServiceName })
 #disable-next-line no-unused-vars
 var azdServiceName = 'staticapp-portal'
 
@@ -128,7 +119,7 @@ module staticApp './core/host/staticwebapp.bicep' = {
   name: 'staticapp'
   scope: rg
   params: {
-    name: !empty(staticAppName) ? staticAppName : 'swa-${resourceToken}'
+    name: staticAppName
     location: staticAppLocation
     tags: union(tags, { 'azd-service-name': azdServiceName })
     sku: {
