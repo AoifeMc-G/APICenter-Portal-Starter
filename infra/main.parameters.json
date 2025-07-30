@@ -4,7 +4,7 @@
     "parameters": {
 
         "location": {
-            "value": "westeurope"
+            "value": "${AZURE_LOCATION}"
         },
         "apiCenterExisted": {
             "value": "${USE_EXISTING_API_CENTER=true}"
