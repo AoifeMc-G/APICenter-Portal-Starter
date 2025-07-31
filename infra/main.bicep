@@ -58,7 +58,7 @@ param applicationInsightsDashboardName string = ''
 param staticAppLocation string
 param staticAppSkuName string = 'Free'
 @description('Name of the Static Web App - must be globally unique')
-param staticAppName string = 'static-apic-uat-001'
+param staticAppName string
 
 var abbrs = loadJsonContent('./abbreviations.json')
 
@@ -76,16 +76,17 @@ var resourceToken = toLower(uniqueString(subscription().id, resourceGroupName, l
 #disable-next-line no-unused-vars
 var azdServiceName = 'staticapp-portal'
 
-// Organize resources in a resource group
+// Use existing resource group (don't try to create it)
 resource rg 'Microsoft.Resources/resourceGroups@2021-04-01' existing = {
   name: resourceGroupName
 }
 
+// Use existing resource group for API Center if specified
 resource rgApiCenter 'Microsoft.Resources/resourceGroups@2021-04-01' existing = if (apiCenterExisted == true) {
   name: apiCenterResourceGroupName
 }
 
-// Provision API Center
+// Provision API Center only if it doesn't exist
 module apiCenter './core/gateway/apicenter.bicep' = if (apiCenterExisted != true) {
   name: 'apicenter'
   scope: rg
@@ -96,6 +97,7 @@ module apiCenter './core/gateway/apicenter.bicep' = if (apiCenterExisted != true
   }
 }
 
+// Reference existing API Center if it exists
 resource apiCenterExisting 'Microsoft.ApiCenter/services@2024-03-15-preview' existing = if (apiCenterExisted == true) {
   name: apiCenterName
   scope: rgApiCenter
@@ -131,6 +133,7 @@ module staticApp './core/host/staticwebapp.bicep' = {
 
 output AZURE_LOCATION string = location
 output AZURE_TENANT_ID string = tenant().tenantId
+output AZURE_RESOURCE_GROUP_NAME string = rg.name
 
 output USE_EXISTING_API_CENTER bool = apiCenterExisted
 output AZURE_API_CENTER string = apiCenterExisted ? apiCenterExisting!.name : apiCenter!.outputs.name
