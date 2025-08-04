@@ -4,6 +4,11 @@ targetScope = 'subscription'
 // For a more complete walkthrough to understand how this file works with azd,
 // see https://learn.microsoft.com/en-us/azure/developer/azure-developer-cli/make-azd-compatible?pivots=azd-create
 
+@minLength(1)
+@maxLength(64)
+@description('Name of the the environment which is used to generate a short unique hash used in all resources.')
+param environmentName string
+
 // Limited to the following locations due to the availability of API Center
 @minLength(1)
 @description('Primary location for all resources')
@@ -21,8 +26,7 @@ targetScope = 'subscription'
 })
 param location string
 
-@description('Name of the existing resource group to deploy resources into')
-param resourceGroupName string 
+param resourceGroupName string = ''
 
 @description('Value indicating whether to use existing API Center instance or not.')
 param apiCenterExisted bool
@@ -57,36 +61,41 @@ param applicationInsightsDashboardName string = ''
 })
 param staticAppLocation string
 param staticAppSkuName string = 'Free'
-@description('Name of the Static Web App - must be globally unique')
-param staticAppName string
+param staticAppName string = ''
 
 var abbrs = loadJsonContent('./abbreviations.json')
 
-// Simple tags without environment dependency
+// tags that should be applied to all resources.
 var tags = {
-  'app-name': 'api-portal'
-  'deployment': 'static-web-app'
+  // Tag all resources with the environment name.
+  'azd-env-name': environmentName
 }
 
-// Generate a unique token using resource group and location only
+// Generate a unique token to be used in naming resources.
+// Remove linter suppression after using.
 #disable-next-line no-unused-vars
-var resourceToken = toLower(uniqueString(subscription().id, resourceGroupName, location))
+var resourceToken = toLower(uniqueString(subscription().id, environmentName, location))
 
 // Name of the service defined in azure.yaml
+// A tag named azd-service-name with this value should be applied to the service host resource, such as:
+//   Microsoft.Web/sites for appservice, function
+// Example usage:
+//   tags: union(tags, { 'azd-service-name': apiServiceName })
 #disable-next-line no-unused-vars
 var azdServiceName = 'staticapp-portal'
 
-// Use existing resource group (don't try to create it)
-resource rg 'Microsoft.Resources/resourceGroups@2021-04-01' existing = {
-  name: resourceGroupName
+// Organize resources in a resource group
+resource rg 'Microsoft.Resources/resourceGroups@2021-04-01' = {
+  name: !empty(resourceGroupName) ? resourceGroupName : '${abbrs.resourcesResourceGroups}${environmentName}'
+  location: location
+  tags: tags
 }
 
-// Use existing resource group for API Center if specified
 resource rgApiCenter 'Microsoft.Resources/resourceGroups@2021-04-01' existing = if (apiCenterExisted == true) {
   name: apiCenterResourceGroupName
 }
 
-// Provision API Center only if it doesn't exist
+// Provision API Center
 module apiCenter './core/gateway/apicenter.bicep' = if (apiCenterExisted != true) {
   name: 'apicenter'
   scope: rg
@@ -97,7 +106,6 @@ module apiCenter './core/gateway/apicenter.bicep' = if (apiCenterExisted != true
   }
 }
 
-// Reference existing API Center if it exists
 resource apiCenterExisting 'Microsoft.ApiCenter/services@2024-03-15-preview' existing = if (apiCenterExisted == true) {
   name: apiCenterName
   scope: rgApiCenter
@@ -121,7 +129,7 @@ module staticApp './core/host/staticwebapp.bicep' = {
   name: 'staticapp'
   scope: rg
   params: {
-    name: staticAppName
+    name: !empty(staticAppName) ? staticAppName : '${abbrs.webStaticSites}${resourceToken}-portal'
     location: staticAppLocation
     tags: union(tags, { 'azd-service-name': azdServiceName })
     sku: {
@@ -133,11 +141,10 @@ module staticApp './core/host/staticwebapp.bicep' = {
 
 output AZURE_LOCATION string = location
 output AZURE_TENANT_ID string = tenant().tenantId
-output AZURE_RESOURCE_GROUP_NAME string = rg.name
 
 output USE_EXISTING_API_CENTER bool = apiCenterExisted
-output AZURE_API_CENTER string = apiCenterExisted ? apiCenterExisting!.name : apiCenter!.outputs.name
-output AZURE_API_CENTER_LOCATION string = apiCenterExisted ? apiCenterExisting!.location : apiCenter!.outputs.location
+output AZURE_API_CENTER string = apiCenterExisted ? apiCenterExisting.name : apiCenter.outputs.name
+output AZURE_API_CENTER_LOCATION string = apiCenterExisted ? apiCenterExisting.location : apiCenter.outputs.location
 output AZURE_API_CENTER_RESOURCE_GROUP string = apiCenterExisted ? rgApiCenter.name : rg.name
 
 output AZURE_STATIC_APP string = staticApp.outputs.name
