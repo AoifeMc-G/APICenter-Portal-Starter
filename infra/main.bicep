@@ -61,7 +61,7 @@ param applicationInsightsDashboardName string = ''
 })
 param staticAppLocation string
 param staticAppSkuName string = 'Free'
-param staticAppName string = ''
+param staticAppName string = 'webapp-apic-uat-portal-001'
 
 var abbrs = loadJsonContent('./abbreviations.json')
 
