@@ -63,6 +63,16 @@ param staticAppLocation string
 param staticAppSkuName string = 'Free'
 param staticAppName string = 'webapp-apic-uat-portal-001'
 
+@description('Enable Front Door for the Static Web App')
+param enableFrontDoor bool = false
+
+@description('Front Door SKU name')
+@allowed(['Standard_AzureFrontDoor', 'Premium_AzureFrontDoor'])
+param frontDoorSkuName string = 'Standard_AzureFrontDoor'
+
+@description('Restrict Static Web App to accept traffic only from Front Door')
+param restrictToFrontDoorOnly bool = false
+
 var abbrs = loadJsonContent('./abbreviations.json')
 
 // tags that should be applied to all resources.
@@ -136,6 +146,31 @@ module staticApp './core/host/staticwebapp.bicep' = {
       name: staticAppSkuName
       tier: staticAppSkuName
     }
+    frontDoorId: '' // Will be configured after Front Door deployment
+    restrictToFrontDoorOnly: false // Will be enabled after Front Door setup
+  }
+}
+
+// Provision Azure Front Door for the Static Web App
+module frontDoor './core/network/frontdoor.bicep' = if (enableFrontDoor) {
+  name: 'frontdoor'
+  scope: rg
+  params: {
+    name: '${abbrs.cdnProfiles}${resourceToken}-portal'
+    tags: tags
+    skuName: frontDoorSkuName
+    staticWebAppHostname: staticApp.outputs.hostname
+    staticWebAppName: staticApp.outputs.name
+  }
+}
+
+// Configure access restrictions after Front Door is created
+module accessRestrictions './core/security/staticwebapp-access-restriction.bicep' = if (enableFrontDoor && restrictToFrontDoorOnly) {
+  name: 'access-restrictions'
+  scope: rg
+  params: {
+    staticWebAppName: staticApp.outputs.name
+    frontDoorId: enableFrontDoor ? frontDoor!.outputs.frontDoorId : ''
   }
 }
 
@@ -143,10 +178,15 @@ output AZURE_LOCATION string = location
 output AZURE_TENANT_ID string = tenant().tenantId
 
 output USE_EXISTING_API_CENTER bool = apiCenterExisted
-output AZURE_API_CENTER string = apiCenterExisted ? apiCenterExisting.name : apiCenter.outputs.name
-output AZURE_API_CENTER_LOCATION string = apiCenterExisted ? apiCenterExisting.location : apiCenter.outputs.location
+output AZURE_API_CENTER string = apiCenterExisted ? apiCenterExisting.name : apiCenter!.outputs.name
+output AZURE_API_CENTER_LOCATION string = apiCenterExisted ? apiCenterExisting.location : apiCenter!.outputs.location
 output AZURE_API_CENTER_RESOURCE_GROUP string = apiCenterExisted ? rgApiCenter.name : rg.name
 
 output AZURE_STATIC_APP string = staticApp.outputs.name
 output AZURE_STATIC_APP_URL string = staticApp.outputs.uri
 output AZURE_STATIC_APP_LOCATION string = staticApp.outputs.location
+
+// Front Door outputs (only when Front Door is enabled)
+output AZURE_FRONT_DOOR_PROFILE_NAME string = enableFrontDoor ? frontDoor!.outputs.frontDoorProfileName : ''
+output AZURE_FRONT_DOOR_ENDPOINT string = enableFrontDoor ? frontDoor!.outputs.endpointHostName : ''
+output AZURE_FRONT_DOOR_ID string = enableFrontDoor ? frontDoor!.outputs.frontDoorId : ''

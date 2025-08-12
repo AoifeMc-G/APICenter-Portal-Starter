@@ -1,0 +1,47 @@
+{
+  "networking": {
+    "allowedIpRanges": ["AzureFrontDoor.Backend"]
+  },
+  "forwardingGateway": {
+    "requiredHeaders": {
+      "X-Azure-FDID": "38a9b306-7e71-45d7-affa-5a101cef5445"
+    },
+    "allowedForwardedHosts": [
+      "afd-ki-api-glb-001-apic-endpoint-craggrgufpaph6f2.a03.azurefd.net"
+    ]
+  },
+  "routes": [
+    {
+      "route": "/*",
+      "allowedRoles": ["anonymous"]
+    },
+    {
+      "route": "/api/*",
+      "allowedRoles": ["anonymous"],
+      "headers": {
+        "Cache-Control": "no-store"
+      }
+    }
+  ],
+  "responseOverrides": {
+    "401": {
+      "redirect": "/login"
+    },
+    "403": {
+      "statusCode": 403,
+      "rewrite": "/custom-403.html"
+    }
+  },
+  "globalHeaders": {
+    "X-Frame-Options": "DENY",
+    "X-Content-Type-Options": "nosniff",
+    "X-XSS-Protection": "1; mode=block",
+    "Strict-Transport-Security": "max-age=31536000; includeSubDomains",
+    "Content-Security-Policy": "default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'"
+  },
+  "mimeTypes": {
+    ".json": "application/json",
+    ".js": "application/javascript",
+    ".css": "text/css"
+  }
+}

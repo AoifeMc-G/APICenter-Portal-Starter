@@ -25,6 +25,18 @@
         },
         "staticAppLocation": {
             "value": "${AZURE_STATIC_APP_LOCATION}"
+        },
+        "enableFrontDoor": {
+            "value": "${ENABLE_FRONT_DOOR=false}"
+        },
+        "frontDoorSkuName": {
+            "value": "${FRONT_DOOR_SKU_NAME=Standard_AzureFrontDoor}"
+        },
+        "restrictToFrontDoorOnly": {
+            "value": "${RESTRICT_TO_FRONT_DOOR_ONLY=false}"
+        },
+        "staticAppSkuName": {
+            "value": "${STATIC_APP_SKU_NAME=Free}"
         }
     }
 }
