@@ -146,8 +146,8 @@ module staticApp './core/host/staticwebapp.bicep' = {
       name: staticAppSkuName
       tier: staticAppSkuName
     }
-    frontDoorId: '' // Will be configured after Front Door deployment
-    restrictToFrontDoorOnly: false // Will be enabled after Front Door setup
+    frontDoorId: '' // Will be configured for existing Front Door
+    restrictToFrontDoorOnly: restrictToFrontDoorOnly
   }
 }
 
@@ -164,13 +164,13 @@ module frontDoor './core/network/frontdoor.bicep' = if (enableFrontDoor) {
   }
 }
 
-// Configure access restrictions after Front Door is created
-module accessRestrictions './core/security/staticwebapp-access-restriction.bicep' = if (enableFrontDoor && restrictToFrontDoorOnly) {
+// Configure access restrictions for existing Front Door
+module accessRestrictions './core/security/staticwebapp-access-restriction.bicep' = if (restrictToFrontDoorOnly) {
   name: 'access-restrictions'
   scope: rg
   params: {
     staticWebAppName: staticApp.outputs.name
-    frontDoorId: enableFrontDoor ? frontDoor!.outputs.frontDoorId : ''
+    frontDoorId: '38a9b306-7e71-45d7-affa-5a101cef5445' // Your existing Front Door ID
   }
 }
 
@@ -186,7 +186,7 @@ output AZURE_STATIC_APP string = staticApp.outputs.name
 output AZURE_STATIC_APP_URL string = staticApp.outputs.uri
 output AZURE_STATIC_APP_LOCATION string = staticApp.outputs.location
 
-// Front Door outputs (only when Front Door is enabled)
-output AZURE_FRONT_DOOR_PROFILE_NAME string = enableFrontDoor ? frontDoor!.outputs.frontDoorProfileName : ''
-output AZURE_FRONT_DOOR_ENDPOINT string = enableFrontDoor ? frontDoor!.outputs.endpointHostName : ''
-output AZURE_FRONT_DOOR_ID string = enableFrontDoor ? frontDoor!.outputs.frontDoorId : ''
+// Front Door outputs (using existing Front Door)
+output AZURE_FRONT_DOOR_PROFILE_NAME string = restrictToFrontDoorOnly ? 'afd-ki-api-glb-001' : ''
+output AZURE_FRONT_DOOR_ENDPOINT string = restrictToFrontDoorOnly ? 'afd-ki-api-glb-001-uat-endpoint-b9cbdkbcc3f7grbr.a03.azurefd.net' : ''
+output AZURE_FRONT_DOOR_ID string = restrictToFrontDoorOnly ? '38a9b306-7e71-45d7-affa-5a101cef5445' : ''
