@@ -8,6 +8,7 @@
     },
     "allowedForwardedHosts": [
       "afd-ki-api-glb-001-uat-endpoint-b9cbdkbcc3f7grbr.a03.azurefd.net",
+      "afd-ki-api-glb-001-apic-endpoint-craggrgufpaph6f2.a03.azurefd.net",
       "portal-uat.api.kantar.com"
     ]
   },
@@ -40,10 +41,38 @@
       }
     },
     {
+      "route": "/assets/*",
+      "allowedRoles": ["anonymous"],
+      "headers": {
+        "Cache-Control": "public, max-age=31536000, immutable",
+        "X-Content-Type-Options": "nosniff",
+        "ETag": "strong"
+      }
+    },
+    {
+      "route": "/*.{js,css,woff,woff2,ttf,eot,svg,png,jpg,jpeg,gif,ico}",
+      "allowedRoles": ["anonymous"],
+      "headers": {
+        "Cache-Control": "public, max-age=2592000",
+        "X-Content-Type-Options": "nosniff",
+        "ETag": "strong"
+      }
+    },
+    {
+      "route": "/*.{webp,avif,mp4,webm}",
+      "allowedRoles": ["anonymous"],
+      "headers": {
+        "Cache-Control": "public, max-age=7776000",
+        "X-Content-Type-Options": "nosniff",
+        "ETag": "strong"
+      }
+    },
+    {
       "route": "/*",
       "allowedRoles": ["anonymous"],
       "headers": {
-        "X-Front-Door-Required": "true"
+        "X-Front-Door-Required": "true",
+        "Cache-Control": "public, max-age=3600, must-revalidate"
       }
     },
     {
@@ -68,11 +97,33 @@
     "X-Content-Type-Options": "nosniff",
     "X-XSS-Protection": "1; mode=block",
     "Strict-Transport-Security": "max-age=31536000; includeSubDomains",
-    "Content-Security-Policy": "default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'"
+    "Content-Security-Policy": "default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'",
+    "Referrer-Policy": "strict-origin-when-cross-origin",
+    "X-CDN-Optimized": "true",
+    "Vary": "Accept-Encoding, Accept"
   },
   "mimeTypes": {
     ".json": "application/json",
     ".js": "application/javascript",
-    ".css": "text/css"
+    ".mjs": "application/javascript",
+    ".css": "text/css",
+    ".html": "text/html",
+    ".htm": "text/html",
+    ".xml": "application/xml",
+    ".txt": "text/plain",
+    ".svg": "image/svg+xml",
+    ".png": "image/png",
+    ".jpg": "image/jpeg",
+    ".jpeg": "image/jpeg",
+    ".gif": "image/gif",
+    ".ico": "image/x-icon",
+    ".woff": "font/woff",
+    ".woff2": "font/woff2",
+    ".ttf": "font/ttf",
+    ".eot": "application/vnd.ms-fontobject",
+    ".webp": "image/webp",
+    ".avif": "image/avif",
+    ".mp4": "video/mp4",
+    ".webm": "video/webm"
   }
 }
