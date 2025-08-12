@@ -36,7 +36,7 @@
             "value": "${RESTRICT_TO_FRONT_DOOR_ONLY=false}"
         },
         "staticAppSkuName": {
-            "value": "${STATIC_APP_SKU_NAME=Free}"
+            "value": "${STATIC_APP_SKU_NAME=Standard}"
         }
     }
 }
