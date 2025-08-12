@@ -33,7 +33,7 @@
             "value": "${FRONT_DOOR_SKU_NAME=Standard_AzureFrontDoor}"
         },
         "restrictToFrontDoorOnly": {
-            "value": "${RESTRICT_TO_FRONT_DOOR_ONLY=false}"
+            "value": "${RESTRICT_TO_FRONT_DOOR_ONLY=true}"
         },
         "staticAppSkuName": {
             "value": "${STATIC_APP_SKU_NAME=Standard}"
