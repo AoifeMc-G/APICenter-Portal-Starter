@@ -41,7 +41,10 @@
     },
     {
       "route": "/*",
-      "allowedRoles": ["anonymous"]
+      "allowedRoles": ["anonymous"],
+      "headers": {
+        "X-Front-Door-Required": "true"
+      }
     },
     {
       "route": "/api/*",
