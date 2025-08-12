@@ -63,13 +63,6 @@ param staticAppLocation string
 param staticAppSkuName string = 'Standard'
 param staticAppName string = 'webapp-apic-uat-portal-001'
 
-@description('Enable Front Door for the Static Web App')
-param enableFrontDoor bool = false
-
-@description('Front Door SKU name')
-@allowed(['Standard_AzureFrontDoor', 'Premium_AzureFrontDoor'])
-param frontDoorSkuName string = 'Standard_AzureFrontDoor'
-
 @description('Restrict Static Web App to accept traffic only from Front Door')
 param restrictToFrontDoorOnly bool = false
 
@@ -151,19 +144,6 @@ module staticApp './core/host/staticwebapp.bicep' = {
   }
 }
 
-// Provision Azure Front Door for the Static Web App
-module frontDoor './core/network/frontdoor.bicep' = if (enableFrontDoor) {
-  name: 'frontdoor'
-  scope: rg
-  params: {
-    name: '${abbrs.cdnProfiles}${resourceToken}-portal'
-    tags: tags
-    skuName: frontDoorSkuName
-    staticWebAppHostname: staticApp.outputs.hostname
-    staticWebAppName: staticApp.outputs.name
-  }
-}
-
 // Configure access restrictions for existing Front Door
 module accessRestrictions './core/security/staticwebapp-access-restriction.bicep' = if (restrictToFrontDoorOnly) {
   name: 'access-restrictions'
@@ -179,7 +159,7 @@ output AZURE_TENANT_ID string = tenant().tenantId
 
 output USE_EXISTING_API_CENTER bool = apiCenterExisted
 output AZURE_API_CENTER string = apiCenterExisted ? apiCenterExisting.name : apiCenter!.outputs.name
-output AZURE_API_CENTER_LOCATION string = apiCenterExisted ? apiCenterExisting.location : apiCenter!.outputs.location
+output AZURE_API_CENTER_LOCATION string = apiCenterExisted ? apiCenterExisting.location : location
 output AZURE_API_CENTER_RESOURCE_GROUP string = apiCenterExisted ? rgApiCenter.name : rg.name
 
 output AZURE_STATIC_APP string = staticApp.outputs.name
