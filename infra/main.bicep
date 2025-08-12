@@ -60,7 +60,7 @@ param applicationInsightsDashboardName string = ''
   }
 })
 param staticAppLocation string
-param staticAppSkuName string = 'Free'
+param staticAppSkuName string = 'Standard'
 param staticAppName string = 'webapp-apic-uat-portal-001'
 
 @description('Enable Front Door for the Static Web App')
