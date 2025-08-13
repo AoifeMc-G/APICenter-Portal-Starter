@@ -3,16 +3,13 @@ param name string
 param location string
 param tags object
 
-param skuName string = 'Standard'
 
 // Create an API center service
 resource apiCenter 'Microsoft.ApiCenter/services@2024-03-15-preview' = {
   name: name
   location: location
   tags: tags
-  sku: {
-    name: skuName
-  }
+  // sku property removed as it is not supported by this resource type
   identity: {
     type: 'SystemAssigned'
   }
