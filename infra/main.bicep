@@ -37,13 +37,6 @@ var apiCenterRegion = location
 @description('Name of the API Center resource group. You can omit this value if `apiCenterExisted` value is set to `False`.')
 param apiCenterResourceGroupName string
 
-// @description('Use monitoring and performance tracing')
-// param useMonitoring bool // Set in main.parameters.json
-
-// param logAnalyticsName string = ''
-// param applicationInsightsName string = ''
-// param applicationInsightsDashboardName string = ''
-
 // Limited to the following locations due to the availability of Static Web Apps
 @minLength(1)
 @description('Location for Static Web Apps')
@@ -64,7 +57,7 @@ param staticAppSkuName string = 'Standard'
 param staticAppName string = 'webapp-apic-prod-portal-001'
 
 @description('Restrict Static Web App to accept traffic only from Front Door')
-param restrictToFrontDoorOnly bool = false
+param restrictToFrontDoorOnly bool = true  // Changed to true for production with Front Door
 
 var abbrs = loadJsonContent('./abbreviations.json')
 
@@ -72,6 +65,7 @@ var abbrs = loadJsonContent('./abbreviations.json')
 var tags = {
   // Tag all resources with the environment name.
   'azd-env-name': environmentName
+  'environment': 'production'  // Added production tag
 }
 
 // Generate a unique token to be used in naming resources.
@@ -114,7 +108,6 @@ resource apiCenterExisting 'Microsoft.ApiCenter/services@2024-03-15-preview' exi
   scope: rgApiCenter
 }
 
-
 // Provision Static Web Apps for each application
 module staticApp './core/host/staticwebapp.bicep' = {
   name: 'staticapp'
@@ -127,7 +120,8 @@ module staticApp './core/host/staticwebapp.bicep' = {
       name: staticAppSkuName
       tier: staticAppSkuName
     }
-    frontDoorId: restrictToFrontDoorOnly ? '38a9b306-7e71-45d7-affa-5a101cef5445' : '' // Set Front Door ID when restrictions are enabled
+    frontDoorId: '38a9b306-7e71-45d7-affa-5a101cef5445'  // Always set for production
+    restrictToFrontDoorOnly: restrictToFrontDoorOnly
   }
 }
 
@@ -144,6 +138,6 @@ output AZURE_STATIC_APP_URL string = staticApp.outputs.uri
 output AZURE_STATIC_APP_LOCATION string = staticApp.outputs.location
 
 // Front Door outputs (using existing Front Door)
-output AZURE_FRONT_DOOR_PROFILE_NAME string = restrictToFrontDoorOnly ? 'afd-ki-api-glb-001' : ''
-output AZURE_FRONT_DOOR_ENDPOINT string = restrictToFrontDoorOnly ? 'afd-ki-api-glb-001-apic-endpoint-craggrgufpaph6f2.a03.azurefd.net' : ''
-output AZURE_FRONT_DOOR_ID string = restrictToFrontDoorOnly ? '38a9b306-7e71-45d7-affa-5a101cef5445' : ''
+output AZURE_FRONT_DOOR_PROFILE_NAME string = 'afd-ki-api-glb-001'
+output AZURE_FRONT_DOOR_ENDPOINT string = 'afd-ki-api-glb-001-apic-endpoint-craggrgufpaph6f2.a03.azurefd.net'
+output AZURE_FRONT_DOOR_ID string = '38a9b306-7e71-45d7-affa-5a101cef5445'
