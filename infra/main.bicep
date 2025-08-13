@@ -114,18 +114,6 @@ resource apiCenterExisting 'Microsoft.ApiCenter/services@2024-03-15-preview' exi
   scope: rgApiCenter
 }
 
-// Provision monitoring resource with Azure Monitor
-module monitoring './core/monitor/monitoring.bicep' = if (useMonitoring == true) {
-  name: 'monitoring'
-  scope: rg
-  params: {
-    location: location
-    tags: tags
-    logAnalyticsName: !empty(logAnalyticsName) ? logAnalyticsName : '${abbrs.operationalInsightsWorkspaces}${resourceToken}'
-    applicationInsightsName: !empty(applicationInsightsName) ? applicationInsightsName : '${abbrs.insightsComponents}${resourceToken}'
-    applicationInsightsDashboardName: !empty(applicationInsightsDashboardName) ? applicationInsightsDashboardName : '${abbrs.portalDashboards}${resourceToken}'
-  }
-}
 
 // Provision Static Web Apps for each application
 module staticApp './core/host/staticwebapp.bicep' = {
