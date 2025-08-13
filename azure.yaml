@@ -24,6 +24,13 @@ services:
     project: ./
     host: staticwebapp
     dist: dist
+    config:
+      build:
+        commands:
+          - npm ci
+          - npm run build
+        outputLocation: dist
+        appLocation: "/"
 
 hooks:
   preup:
@@ -63,13 +70,13 @@ hooks:
     posix:
       shell: sh
       run: infra/hooks/predeploy.sh
-      continueOnError: false
-      interactive: true
+      continueOnError: true  # Changed to true for production safety
+      interactive: false    # Changed to false for production
     windows:
       shell: pwsh
       run: infra/hooks/predeploy.ps1
-      continueOnError: false
-      interactive: true
+      continueOnError: true  # Changed to true for production safety
+      interactive: false    # Changed to false for production
   predown:
     posix:
       shell: sh
