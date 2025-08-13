@@ -127,27 +127,28 @@ module staticApp './core/host/staticwebapp.bicep' = {
       name: staticAppSkuName
       tier: staticAppSkuName
     }
-    frontDoorId: '' // Will be configured for existing Front Door
+    frontDoorId: restrictToFrontDoorOnly ? '38a9b306-7e71-45d7-affa-5a101cef5445' : '' // Set Front Door ID when restrictions are enabled
     restrictToFrontDoorOnly: restrictToFrontDoorOnly
   }
 }
 
 // Configure access restrictions for existing Front Door
-module accessRestrictions './core/security/staticwebapp-access-restriction.bicep' = if (restrictToFrontDoorOnly) {
-  name: 'access-restrictions'
-  scope: rg
-  params: {
-    staticWebAppName: staticApp.outputs.name
-    frontDoorId: '38a9b306-7e71-45d7-affa-5a101cef5445' // Your existing Front Door ID
-  }
-}
+// Note: Access restrictions are configured in staticwebapp.config.json
+// module accessRestrictions './core/security/staticwebapp-access-restriction.bicep' = if (restrictToFrontDoorOnly) {
+//   name: 'access-restrictions'
+//   scope: rg
+//   params: {
+//     staticWebAppName: staticApp.outputs.name
+//     frontDoorId: '38a9b306-7e71-45d7-affa-5a101cef5445' // Your existing Front Door ID
+//   }
+// }
 
 output AZURE_LOCATION string = location
 output AZURE_TENANT_ID string = tenant().tenantId
 
 output USE_EXISTING_API_CENTER bool = apiCenterExisted
 output AZURE_API_CENTER string = apiCenterExisted ? apiCenterExisting.name : apiCenter!.outputs.name
-output AZURE_API_CENTER_LOCATION string = apiCenterExisted ? apiCenterExisting.location : location
+output AZURE_API_CENTER_LOCATION string = apiCenterRegion
 output AZURE_API_CENTER_RESOURCE_GROUP string = apiCenterExisted ? rgApiCenter.name : rg.name
 
 output AZURE_STATIC_APP string = staticApp.outputs.name
