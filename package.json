@@ -5,8 +5,9 @@
     "type": "module",
     "scripts": {
         "start": "vite",
-        "build": "tsc && vite build",
-        "ts": "tsc --noEmit",
+        "build": "vite build",
+        "build-with-types": "tsc && vite build",
+        "type-check": "tsc --noEmit",
         "eslint:base": "eslint . --ext .ts,.tsx --ignore-path ./.gitignore",
         "eslint:check": "yarn eslint:base --max-warnings 0",
         "eslint:fix": "yarn eslint:base --fix",
