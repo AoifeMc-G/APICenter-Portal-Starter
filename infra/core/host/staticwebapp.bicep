@@ -11,8 +11,6 @@ param sku object = {
 @description('Front Door profile ID for access restrictions')
 param frontDoorId string = '38a9b306-7e71-45d7-affa-5a101cef5445'
 
-@description('Enable access restrictions to allow only Front Door traffic')
-param restrictToFrontDoorOnly bool = true
 
 resource web 'Microsoft.Web/staticSites@2022-03-01' = {
   name: name
@@ -21,8 +19,6 @@ resource web 'Microsoft.Web/staticSites@2022-03-01' = {
   sku: sku
   properties: {
     provider: 'Custom'
-    // Enterprise grade edge requires Standard or higher SKU
-    enterpriseGradeCdnStatus: (sku.name != 'Free' && restrictToFrontDoorOnly) ? 'Enabled' : 'Disabled'
     // Enable private endpoint access
     allowConfigFileUpdates: true
     stagingEnvironmentPolicy: 'Enabled'

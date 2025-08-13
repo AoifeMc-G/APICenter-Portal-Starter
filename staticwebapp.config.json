@@ -7,7 +7,6 @@
       "X-Azure-FDID": "38a9b306-7e71-45d7-affa-5a101cef5445"
     },
     "allowedForwardedHosts": [
-      "afd-ki-api-glb-001-apic-endpoint-craggrgufpaph6f2.a03.azurefd.net",
       "apicenter.api.kantar.com"
     ]
   },

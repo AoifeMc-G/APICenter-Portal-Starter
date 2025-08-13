@@ -26,7 +26,7 @@ param environmentName string
 })
 param location string
 
-param resourceGroupName string = 'rg-apic-uat-portal-001'
+param resourceGroupName string = 'rg-apic-prd-portal-001'
 
 @description('Value indicating whether to use existing API Center instance or not.')
 param apiCenterExisted bool
@@ -61,7 +61,7 @@ param apiCenterResourceGroupName string
 })
 param staticAppLocation string
 param staticAppSkuName string = 'Standard'
-param staticAppName string = 'webapp-apic-uat-portal-001'
+param staticAppName string = 'webapp-apic-prd-portal-001'
 
 @description('Restrict Static Web App to accept traffic only from Front Door')
 param restrictToFrontDoorOnly bool = false
@@ -128,20 +128,8 @@ module staticApp './core/host/staticwebapp.bicep' = {
       tier: staticAppSkuName
     }
     frontDoorId: restrictToFrontDoorOnly ? '38a9b306-7e71-45d7-affa-5a101cef5445' : '' // Set Front Door ID when restrictions are enabled
-    restrictToFrontDoorOnly: restrictToFrontDoorOnly
   }
 }
-
-// Configure access restrictions for existing Front Door
-// Note: Access restrictions are configured in staticwebapp.config.json
-// module accessRestrictions './core/security/staticwebapp-access-restriction.bicep' = if (restrictToFrontDoorOnly) {
-//   name: 'access-restrictions'
-//   scope: rg
-//   params: {
-//     staticWebAppName: staticApp.outputs.name
-//     frontDoorId: '38a9b306-7e71-45d7-affa-5a101cef5445' // Your existing Front Door ID
-//   }
-// }
 
 output AZURE_LOCATION string = location
 output AZURE_TENANT_ID string = tenant().tenantId
