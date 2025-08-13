@@ -1,0 +1,227 @@
+/* Your existing color variables */
+:root {
+    --blue: #115EA3;
+    --blue-light: #0F6CBD;
+    --blue-button: #6387E3;
+    --gray: #616161;
+    --gray-dark: #242424;
+    --gray-light: #D1D1D1;
+    --gray-xlight: #F3F2F1;
+}
+
+/* Base styles */
+html, body {
+    height: 100%;
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    margin: 0;
+    position: relative;
+    background-color: white;
+}
+
+h1, h2, h3, h4, h5, h6, p {
+    margin: 0;
+    font-size: 1rem;
+}
+
+.contentWrapper {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.aui-root {
+    max-width: 1460px;
+    margin: 0 auto;
+    padding: 0 2rem;
+}
+
+/* Header styling */
+.gradient-header {
+    background: white;
+    border-bottom: 1px solid var(--gray-xlight);
+    padding: 1rem 0;
+}
+
+.gradient-header .aui-root {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.gradient-header .logo h1 {
+    font-size: 1.5rem;
+    color: var(--gray-dark);
+}
+
+.gradient-header .headerLinks a {
+    margin: 0 0.5rem;
+    color: var(--gray);
+    text-decoration: none;
+    font-size: 0.875rem;
+    font-weight: 600;
+}
+
+.gradient-header .headerLinks a:hover {
+    color: var(--blue);
+    text-decoration: underline;
+}
+
+/* Your beautiful gradient heading section */
+.heading {
+    padding: 3.125rem 3.125rem 4rem;
+    background: linear-gradient(45deg, hsla(204, 65%, 71%, 1) 0%, hsla(273, 34%, 75%, 1) 43%, hsla(358, 43%, 75%, 1) 57%, hsla(43, 96%, 63%, 1) 100%);
+    color: white;
+    text-align: center;
+}
+
+.heading h1 {
+    margin: 0 0 1rem;
+    font-size: 2.5rem;
+    font-weight: 600;
+    line-height: 3.25rem;
+}
+
+.heading h2 {
+    margin: 1rem 0;
+    font-size: 0.875rem;
+    font-weight: 600;
+    line-height: 1.25rem;
+}
+
+.heading .link {
+    margin-top: 1rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    line-height: 1.25rem;
+}
+
+.heading .link a {
+    color: white;
+    text-decoration: none;
+}
+
+.heading .link a:hover {
+    text-decoration: underline;
+}
+
+/* Main content */
+main {
+    flex-grow: 1;
+    padding: 2rem 0;
+}
+
+.status-section {
+    background: white;
+    border-radius: 8px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.status-section h2 {
+    color: var(--gray-dark);
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    border-bottom: 2px solid var(--gray-xlight);
+    padding-bottom: 0.5rem;
+}
+
+.status-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    margin: 0.5rem 0;
+    background: var(--gray-xlight);
+    border-radius: 6px;
+    color: var(--gray-dark);
+}
+
+.status-item:hover {
+    background: #E1DFDD;
+}
+
+.status-item.warning {
+    background: #fff3cd;
+    border-left: 4px solid #ffc107;
+}
+
+.status-item.success {
+    background: #d4edda;
+    border-left: 4px solid #28a745;
+}
+
+.badge {
+    padding: 0.4rem 1rem;
+    border-radius: 20px;
+    font-size: 0.875rem;
+    font-weight: 600;
+}
+
+.badge.success {
+    background: #28a745;
+    color: white;
+}
+
+.badge.warning {
+    background: #ffc107;
+    color: var(--gray-dark);
+}
+
+.badge.info {
+    background: var(--blue-button);
+    color: white;
+}
+
+.connection-details {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+.detail-item {
+    background: var(--gray-xlight);
+    padding: 1rem;
+    border-radius: 6px;
+}
+
+.detail-item strong {
+    color: var(--gray);
+    display: block;
+    margin-bottom: 0.5rem;
+    font-size: 0.875rem;
+}
+
+.detail-value {
+    color: var(--gray-dark);
+    font-family: 'Courier New', monospace;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+/* Footer */
+footer {
+    background-color: #E6E6E6;
+    padding: 2rem 0;
+    text-align: center;
+    color: var(--gray);
+}
+
+@media (max-width: 768px) {
+    .connection-details {
+        grid-template-columns: 1fr;
+    }
+    
+    .heading h1 {
+        font-size: 2rem;
+    }
+    
+    .gradient-header .aui-root {
+        flex-direction: column;
+        gap: 1rem;
+    }
+}
