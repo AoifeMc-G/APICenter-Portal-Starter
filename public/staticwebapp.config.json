@@ -7,9 +7,8 @@
       "X-Azure-FDID": "38a9b306-7e71-45d7-affa-5a101cef5445"
     },
     "allowedForwardedHosts": [
-      "afd-ki-api-glb-001-uat-endpoint-b9cbdkbcc3f7grbr.a03.azurefd.net",
       "afd-ki-api-glb-001-apic-endpoint-craggrgufpaph6f2.a03.azurefd.net",
-      "portal-uat.api.kantar.com"
+      "apicenter.api.kantar.com"
     ]
   },
   "routes": [
@@ -101,29 +100,5 @@
     "Referrer-Policy": "strict-origin-when-cross-origin",
     "X-CDN-Optimized": "true",
     "Vary": "Accept-Encoding, Accept"
-  },
-  "mimeTypes": {
-    ".json": "application/json",
-    ".js": "application/javascript",
-    ".mjs": "application/javascript",
-    ".css": "text/css",
-    ".html": "text/html",
-    ".htm": "text/html",
-    ".xml": "application/xml",
-    ".txt": "text/plain",
-    ".svg": "image/svg+xml",
-    ".png": "image/png",
-    ".jpg": "image/jpeg",
-    ".jpeg": "image/jpeg",
-    ".gif": "image/gif",
-    ".ico": "image/x-icon",
-    ".woff": "font/woff",
-    ".woff2": "font/woff2",
-    ".ttf": "font/ttf",
-    ".eot": "application/vnd.ms-fontobject",
-    ".webp": "image/webp",
-    ".avif": "image/avif",
-    ".mp4": "video/mp4",
-    ".webm": "video/webm"
   }
 }

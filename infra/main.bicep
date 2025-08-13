@@ -168,5 +168,5 @@ output AZURE_STATIC_APP_LOCATION string = staticApp.outputs.location
 
 // Front Door outputs (using existing Front Door)
 output AZURE_FRONT_DOOR_PROFILE_NAME string = restrictToFrontDoorOnly ? 'afd-ki-api-glb-001' : ''
-output AZURE_FRONT_DOOR_ENDPOINT string = restrictToFrontDoorOnly ? 'afd-ki-api-glb-001-uat-endpoint-b9cbdkbcc3f7grbr.a03.azurefd.net' : ''
+output AZURE_FRONT_DOOR_ENDPOINT string = restrictToFrontDoorOnly ? 'afd-ki-api-glb-001-apic-endpoint-craggrgufpaph6f2.a03.azurefd.net' : ''
 output AZURE_FRONT_DOOR_ID string = restrictToFrontDoorOnly ? '38a9b306-7e71-45d7-affa-5a101cef5445' : ''

@@ -9,7 +9,7 @@ param sku object = {
 }
 
 @description('Front Door profile ID for access restrictions')
-param frontDoorId string = ''
+param frontDoorId string = '38a9b306-7e71-45d7-affa-5a101cef5445'
 
 @description('Enable access restrictions to allow only Front Door traffic')
 param restrictToFrontDoorOnly bool = true
