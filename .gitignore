@@ -351,3 +351,5 @@ dist-ssr
 *.sln
 *.sw?
 .azure
+
+.env
