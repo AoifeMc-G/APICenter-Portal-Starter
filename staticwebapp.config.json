@@ -8,7 +8,7 @@
     },
     "allowedForwardedHosts": [
       "afd-ki-api-glb-001-apic-endpoint-craggrgufpaph6f2.a03.azurefd.net",
-      "apicenter.kantar.com"
+      "apicenter.api.kantar.com"
     ]
   },
   "routes": [
