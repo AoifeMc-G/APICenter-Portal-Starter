@@ -37,12 +37,12 @@ var apiCenterRegion = location
 @description('Name of the API Center resource group. You can omit this value if `apiCenterExisted` value is set to `False`.')
 param apiCenterResourceGroupName string
 
-@description('Use monitoring and performance tracing')
-param useMonitoring bool // Set in main.parameters.json
+// @description('Use monitoring and performance tracing')
+// param useMonitoring bool // Set in main.parameters.json
 
-param logAnalyticsName string = ''
-param applicationInsightsName string = ''
-param applicationInsightsDashboardName string = ''
+// param logAnalyticsName string = ''
+// param applicationInsightsName string = ''
+// param applicationInsightsDashboardName string = ''
 
 // Limited to the following locations due to the availability of Static Web Apps
 @minLength(1)
