@@ -26,7 +26,7 @@ param environmentName string
 })
 param location string
 
-param resourceGroupName string = 'rg-apic-prod-portal-001'
+param resourceGroupName string = 'rg-apic-portal-prod-001'
 
 @description('Value indicating whether to use existing API Center instance or not.')
 param apiCenterExisted bool
@@ -54,7 +54,7 @@ param apiCenterResourceGroupName string
 })
 param staticAppLocation string
 param staticAppSkuName string = 'Standard'
-param staticAppName string = 'webapp-apic-prod-portal-001'
+param staticAppName string = 'webapp-apic-portal-prod-001'
 
 @description('Restrict Static Web App to accept traffic only from Front Door')
 param restrictToFrontDoorOnly bool = true  // Changed to true for production with Front Door
@@ -65,7 +65,6 @@ var abbrs = loadJsonContent('./abbreviations.json')
 var tags = {
   // Tag all resources with the environment name.
   'azd-env-name': environmentName
-  'environment': 'production'  // Added production tag
 }
 
 // Generate a unique token to be used in naming resources.
