@@ -4,13 +4,15 @@ param location string
 param tags object = {}
 
 param sku object = {
-  name: 'Standard'   // Changed from 'Free' to 'Standard' for better access control
+  name: 'Standard'
   tier: 'Standard'
 }
 
 @description('Front Door profile ID for access restrictions')
 param frontDoorId string = '38a9b306-7e71-45d7-affa-5a101cef5445'
 
+@description('Enable access restrictions to allow only Front Door traffic')
+param restrictToFrontDoorOnly bool = true
 
 resource web 'Microsoft.Web/staticSites@2022-03-01' = {
   name: name
@@ -19,7 +21,8 @@ resource web 'Microsoft.Web/staticSites@2022-03-01' = {
   sku: sku
   properties: {
     provider: 'Custom'
-    // Enable private endpoint access
+    // Disable enterprise grade edge to avoid deployment issues
+    enterpriseGradeCdnStatus: 'Disabled'
     allowConfigFileUpdates: true
     stagingEnvironmentPolicy: 'Enabled'
   }

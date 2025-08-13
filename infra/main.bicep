@@ -26,7 +26,7 @@ param environmentName string
 })
 param location string
 
-param resourceGroupName string = 'rg-apic-prd-portal-001'
+param resourceGroupName string = 'rg-apic-prod-portal-001'
 
 @description('Value indicating whether to use existing API Center instance or not.')
 param apiCenterExisted bool
@@ -61,7 +61,7 @@ param apiCenterResourceGroupName string
 })
 param staticAppLocation string
 param staticAppSkuName string = 'Standard'
-param staticAppName string = 'webapp-apic-prd-portal-001'
+param staticAppName string = 'webapp-apic-prod-portal-001'
 
 @description('Restrict Static Web App to accept traffic only from Front Door')
 param restrictToFrontDoorOnly bool = false
