@@ -1,38 +1,149 @@
-header {
-    min-height: 3.75rem;
-    max-width: 100rem;
-    width: calc(100% - 4rem);
-    margin: 0 auto;
-    padding: 0 2rem;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    background-color: #FFD600; // Yellow
-    color: #000000; // Black text for contrast
+@import "/src/styles/index";
 
-    .logo {
-        display: flex;
-        align-items: center;
-    }
+.heading {
+	padding: 3.125rem 3.125rem 4rem;
+	background: #FFD600;   /* Yellow background */
+	color: #333333;        /* Light black (charcoal) text */
+	text-align: center;
 
-    .headerRight {
-        display: flex;
-        align-items: center;
-    }
+	h1 {
+		margin: 0 0 1rem;
+		font-size: 2.5rem;
+		font-weight: 600;
+		line-height: 3.25rem;
+		/* 130% */
+	}
 
-    .headerLinks {
-        a {
-            margin: 0 .5rem;
+	h2 {
+		margin: 1rem 0;
+		font-size: 0.875rem;
+		font-weight: 600;
+		line-height: 1.25rem;
+		/* 142.857% */
+	}
 
-            &:last-of-type {
-                margin-right: 0;
-            }
-        }
-    }
+	.link {
+		margin-top: 1rem;
+		font-size: 0.875rem;
+		font-weight: 600;
+		line-height: 1.25rem;
+		/* 142.857% */
 
-    .signupButtonWrapper {
-        border-left: 1px solid;
-        padding-left: 1.5rem;
-        margin-left: 1.5rem;
-    }
+		a {
+			color: white;
+			text-decoration: none;
+
+			&:hover {
+				text-decoration: underline;
+			}
+		}
+
+		svg {
+			display: inline-block;
+			vertical-align: bottom;
+		}
+	}
+}
+
+.searchContainer {
+	position: relative;
+	width: 42rem;
+	margin: 0 auto;
+
+	.input {
+		width: 100%;
+	}
+
+	.popup {
+		box-sizing: border-box;
+		position: absolute;
+		width: 100%;
+		background: white;
+		color: black;
+		box-shadow: 0 2px 4px rgba(0, 0, 0, 0.50);
+		z-index: 1;
+
+		.header {
+			display: flex;
+			justify-content: space-between;
+			margin: .5rem .75rem .125rem;
+			padding-bottom: .5rem;
+			border-bottom: 1px solid $grayLight;
+
+			h6 {
+				font-size: 0.75rem;
+				font-weight: 400;
+				letter-spacing: 0.02rem;
+			}
+
+			button {
+				color: $blue;
+				font-size: 0.75rem;
+				font-weight: 400;
+				line-height: 1rem;
+
+				&:hover {
+					text-decoration: underline;
+				}
+			}
+		}
+
+		.record {
+			display: flex;
+			justify-content: space-between;
+			width: 100%;
+
+			.recordSelect {
+				display: flex;
+				width: 100%;
+				padding: .5rem .625rem;
+				align-items: center;
+				gap: 1rem;
+				letter-spacing: 0.01rem;
+				font-size: 0.875rem;
+			}
+
+			&:hover {
+				background: $grayXLight;
+
+				.recordDelete {
+					display: block;
+				}
+			}
+
+			.recordDelete {
+				display: none;
+				width: 2rem;
+				height: 2rem;
+				flex-shrink: 0;
+				background: #E1DFDD;
+
+				&:hover {
+					background: $grayLight;
+				}
+			}
+			
+			.apiName,
+			.apiMeta {
+				text-align: left;
+				white-space: nowrap;
+				overflow: hidden;
+				text-overflow: ellipsis;
+			}
+
+			.apiName {
+				width: 10rem;
+			}
+
+			.apiMeta {
+				color: $gray;
+				width: 25rem;
+			}
+		}
+
+		.noResults {
+			padding: 3rem 0;
+			color: $gray;
+		}
+	}
 }
