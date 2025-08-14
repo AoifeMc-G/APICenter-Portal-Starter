@@ -4,37 +4,95 @@ html,
 body,
 #root {
     height: 100%;
+    background-color: $black;
+    color: $white;
 }
 
 body {
     margin: 0;
     position: relative;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: $black;
 }
 
 h1, h2, h3, h4, h5, h6, p {
     margin: 0;
     font-size: 1rem;
+    color: $white;
 }
 
 button {
-    padding: 0;
-    border: none;
+    padding: 8px 16px;
+    border: 2px solid $yellow;
     font: inherit;
-    color: inherit;
-    background-color: transparent;
+    color: $black;
+    background-color: $yellow;
     cursor: pointer;
+    border-radius: 6px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+
+    &:hover {
+        background-color: $yellowDark;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(255, 215, 0, 0.3);
+    }
+
+    &:active {
+        transform: translateY(0);
+    }
 }
 
 .contentWrapper {
     display: flex;
     flex-direction: column;
+    background-color: $black;
+    min-height: 100vh;
 }
 
 main {
     flex-grow: 1;
+    background-color: $black;
 }
 
 .aui-root {
     max-width: 1460px;
     margin: 0 auto;
+    background-color: $black;
+}
+
+// Input styles
+input[type="text"], 
+input[type="search"], 
+input[type="email"], 
+input[type="password"],
+textarea,
+select {
+    background-color: $blackLight;
+    border: 2px solid $grayDark;
+    color: $white;
+    padding: 8px 12px;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+
+    &:focus {
+        outline: none;
+        border-color: $yellow;
+        box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.1);
+    }
+
+    &::placeholder {
+        color: $grayLight;
+    }
+}
+
+// Links
+a {
+    color: $yellow;
+    transition: color 0.3s ease;
+
+    &:hover {
+        color: $yellowLight;
+        text-decoration: none;
+    }
 }

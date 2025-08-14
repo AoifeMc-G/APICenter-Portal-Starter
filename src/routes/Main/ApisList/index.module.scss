@@ -1,3 +1,4 @@
+@import "/src/styles/colors.module";
 @import "/src/styles/index";
 
 .apisList {
@@ -6,6 +7,8 @@
 	gap: 2rem;
 	max-width: 100rem;
 	margin: 0 auto;
+	background-color: $black;
+	color: $white;
 
 	.main {
 		width: 100%;
@@ -14,27 +17,73 @@
 			display: flex;
 			align-items: center;
 			justify-content: space-between;
+			margin-bottom: 1.5rem;
 
 			p {
 				font-size: 0.875rem;
 				line-height: 1.25rem;
-				/* 142.857% */
+				color: $white;
+				font-weight: 500;
 			}
 
 			.controls {
+				display: flex;
+				align-items: center;
+				gap: 1rem;
+
 				&>div {
 					display: inline-block;
 				}
 
 				.sortBy {
-					&>* {
-						display: inline-block;
-						vertical-align: middle;
-					}
+					display: flex;
+					align-items: center;
+					gap: 0.5rem;
 
 					label {
-						margin-right: .5rem;
+						color: $white;
 						font-weight: 600;
+						font-size: 0.875rem;
+					}
+
+					select {
+						background-color: $blackLight;
+						border: 2px solid $grayDark;
+						color: $white;
+						padding: 6px 12px;
+						border-radius: 6px;
+						cursor: pointer;
+
+						&:focus {
+							border-color: $yellow;
+							outline: none;
+						}
+					}
+				}
+
+				.viewToggle {
+					display: flex;
+					background-color: $blackLight;
+					border: 2px solid $grayDark;
+					border-radius: 6px;
+					overflow: hidden;
+
+					button {
+						background-color: transparent;
+						border: none;
+						color: $white;
+						padding: 8px 12px;
+						cursor: pointer;
+						transition: all 0.3s ease;
+
+						&:hover {
+							background-color: $grayDark;
+						}
+
+						&.active {
+							background-color: $yellow;
+							color: $black;
+						}
 					}
 				}
 			}
@@ -49,29 +98,31 @@
 	flex-wrap: wrap;
 
 	.filterTag {
-		padding: 0.3rem 0.75rem;
-		border: solid 1px $grayLight;
-		border-radius: 0.25rem;
-		font-size: 0.875rem;
-		line-height: 1.25rem;
-		/* 142.857% */
+		background-color: $yellow;
+		color: $black;
+		padding: 4px 12px;
+		border-radius: 20px;
+		font-size: 0.75rem;
+		font-weight: 600;
+		display: flex;
+		align-items: center;
+		gap: 6px;
 
-		b {
-			font-weight: 600;
-		}
+		.removeFilter {
+			background: none;
+			border: none;
+			color: $black;
+			cursor: pointer;
+			padding: 0;
+			margin: 0;
+			font-size: 1rem;
+			line-height: 1;
 
-		button {
-			margin-left: 0.25rem;
+			&:hover {
+				color: $blackLight;
+			}
 		}
 	}
-}
-
-.filtersClearAll {
-	font-size: 0.875rem;
-	font-weight: 600;
-	line-height: 1.25rem;
-	/* 142.857% */
-	text-decoration-line: underline;
 }
 
 .emptyState {
@@ -84,5 +135,37 @@
 
 	svg {
 		padding-bottom: 2rem;
+	}
+}
+
+.noResults {
+	text-align: center;
+	padding: 4rem 2rem;
+	color: $grayLight;
+
+	h3 {
+		color: $white;
+		font-size: 1.5rem;
+		margin-bottom: 1rem;
+	}
+
+	p {
+		color: $grayLight;
+		margin-bottom: 2rem;
+	}
+
+	button {
+		background-color: $yellow;
+		color: $black;
+		border: 2px solid $yellow;
+		padding: 12px 24px;
+		border-radius: 6px;
+		font-weight: 600;
+		cursor: pointer;
+		transition: all 0.3s ease;
+
+		&:hover {
+			background-color: $yellowDark;
+		}
 	}
 }
