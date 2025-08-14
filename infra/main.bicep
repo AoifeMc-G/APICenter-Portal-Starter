@@ -26,7 +26,7 @@ param environmentName string
 })
 param location string
 
-param resourceGroupName string = 'rg-apic-portal-prod-001'
+param resourceGroupName string = 'rg-prod-apic-001'
 
 @description('Value indicating whether to use existing API Center instance or not.')
 param apiCenterExisted bool
