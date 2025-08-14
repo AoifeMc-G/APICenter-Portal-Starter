@@ -54,7 +54,7 @@ param apiCenterResourceGroupName string
 })
 param staticAppLocation string
 param staticAppSkuName string = 'Standard'
-param staticAppName string = 'webapp-apic-portal-prod-001'
+param staticAppName string = 'webapp-apic-portal-prod-002'
 
 @description('Restrict Static Web App to accept traffic only from Front Door')
 param restrictToFrontDoorOnly bool = true  // Changed to true for production with Front Door
