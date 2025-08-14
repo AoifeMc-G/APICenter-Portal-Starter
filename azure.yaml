@@ -6,11 +6,9 @@
 
 # Name of the application.
 name: apicenter-portal-starter
-resourceGroup: ${AZURE_RESOURCE_GROUP_NAME}
-
 metadata:
   template: api-center-portal
-
+  
 workflows:
   up: 
     steps:
@@ -24,13 +22,6 @@ services:
     project: ./
     host: staticwebapp
     dist: dist
-    config:
-      build:
-        commands:
-          - npm ci
-          - npm run build
-        outputLocation: dist
-        appLocation: "/"
 
 hooks:
   preup:
@@ -70,13 +61,13 @@ hooks:
     posix:
       shell: sh
       run: infra/hooks/predeploy.sh
-      continueOnError: true  # Changed to true for production safety
-      interactive: false    # Changed to false for production
+      continueOnError: false
+      interactive: true
     windows:
       shell: pwsh
       run: infra/hooks/predeploy.ps1
-      continueOnError: true  # Changed to true for production safety
-      interactive: false    # Changed to false for production
+      continueOnError: false
+      interactive: true
   predown:
     posix:
       shell: sh
